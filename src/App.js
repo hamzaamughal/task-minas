@@ -1,23 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { players as initialPlayers } from './data';
+import PlayerCard from './components/PlayerCard';
+import './App.css'
 
-function App() {
+const App = () => {
+  const [players, setPlayers] = useState(initialPlayers);
+  const [sortOrder, setSortOrder] = useState(""); // "ASC" or "DESC"
+
+  const sortPlayers = (order) => {
+    const sorted = [...players].sort((a, b) => {
+      if (a.realName < b.realName) return order === "ASC" ? -1 : 1;
+      if (a.realName > b.realName) return order === "ASC" ? 1 : -1;
+      return 0;
+    });
+    setPlayers(sorted);
+    setSortOrder(order);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <div className="controls">
+        <button onClick={() => sortPlayers("ASC")}>SORT ASC</button>
+        <button onClick={() => sortPlayers("DESC")}>SORT DESC</button>
+      </div>
+      {players.map((player, index) => (
+        <PlayerCard key={index} player={player} />
+      ))}
     </div>
   );
 }
